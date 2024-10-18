@@ -1,1 +1,5 @@
-# interview-question-creator-gen-ai
+# Interview-Question-Creator-Gen-AI
+
+### Desing
+![architecture-image](./figures/desing.png)
+
