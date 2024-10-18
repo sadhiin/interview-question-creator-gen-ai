@@ -1,5 +1,7 @@
 # Enviromnet veriable
 .env
+# user uploads
+*.pdf
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
