@@ -1,17 +1,14 @@
 # Interview-Question-Creator-Gen-AI
-Interview-Question-Creator-Gen-AI
+
 Welcome to the Interview-Question-Creator-Gen-AI project! This project leverages the power of FastAPI and advanced language models to generate interview questions and answers from uploaded PDF documents.
 
-
-
-
-### Desing
-![architecture-image](./figures/desing.png)
-
+## Design
+![architecture-image](./figures/design.png)
 
 ## Table of Contents  
 - [Introduction](#introduction)  
 - [Features](#features)  
+- [Prerequisites](#prerequisites)  
 - [Installation](#installation)  
 - [Usage](#usage)  
 - [Endpoints](#endpoints)  
@@ -30,13 +27,17 @@ This tool can be particularly useful for **HR professionals, educators, and anyo
 - **📝 Answer Generation**: Provide answers to the generated questions using advanced language models.  
 - **📊 CSV Export**: Export the generated questions and answers to a CSV file for easy access and sharing.  
 
+## Prerequisites
+
+- Python 3.10+
+- pip
+
 ## Installation  
 
 ### Clone the repository:  
 ```bash
 git clone https://github.com/sadhiin/interview-question-creator-gen-ai.git
 cd interview-question-creator-gen-ai
-```
 
 ### Create a virtual environment and activate it:  
 ```bash
@@ -55,13 +56,13 @@ pip install petals
 ```
 
 ## Usage  
-
+Youre Openai API and HuggingFace Token at `.env` file.
 Run the FastAPI application:  
 ```bash
 uvicorn app:app --host 0.0.0.0 --port 8080 --reload
 ```
 
-Open your browser and navigate to **[http://localhost:8080](http://localhost:8080)** to access the web application.  
+Open your browser and navigate to **[http://localhost:8080](http://localhost:8080)** to access the web application. And the SweigerUI at **[http://localhost:8080/docs](http://localhost:8080/docs)**
 
 ## Endpoints  
 
@@ -72,7 +73,7 @@ Open your browser and navigate to **[http://localhost:8080](http://localhost:808
 **Uploads a PDF file.**  
 
 #### **Request Parameters:**  
-- `pdf_file (bytes)`: The PDF file to upload.  
+- `pdf_file (bytes)`: The PDF file to upload `file_name.pdf`.  
 - `filename (str)`: The name of the file.  
 
 #### **Response:**  
