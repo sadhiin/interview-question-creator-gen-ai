@@ -56,7 +56,7 @@ pip install petals
 ```
 
 ## Usage  
-Youre Openai API and HuggingFace Token at `.env` file.
+
 Run the FastAPI application:  
 ```bash
 uvicorn app:app --host 0.0.0.0 --port 8080 --reload

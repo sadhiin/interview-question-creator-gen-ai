@@ -1,4 +1,4 @@
-question_prompt_template = """
+QUESTION_PROMPT_TEMPLATE = """
 You are an expret at creating questions based on python and coding.
 Your goal is to prepare a good programmer for their exam and coding tests for evaluation.
 You do this by asking question about the information below:
@@ -10,8 +10,7 @@ Create questions that will prepare a programmer for their test. Make sure not to
 Questions:
 """
 
-
-refine_template = ("""
+REFINE_TEMPLATE = ("""
 You are an expert at creating practice question based on coding. Your goal is to help a programmer prepare for a coding test.
 We have received some practice question to a certain extent, {existing_answer}
 We have option to refine the existing question or add new ones.
