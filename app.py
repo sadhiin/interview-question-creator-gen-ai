@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.encoders import jsonable_encoder
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from src.helper import llm_pipeline
@@ -16,6 +17,15 @@ from src.helper import llm_pipeline
 app = FastAPI()
 app.mount('/static', StaticFiles(directory='static'), name='static')
 templates = Jinja2Templates(directory='templates')
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust this to your frontend's origin in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 class UploadPDF(BaseModel):
     filename: str
@@ -69,10 +79,17 @@ def get_csv(file_path):
 
 @app.post('/analyze')
 async def chat(request: Request, data: AnalyzePDF = Depends()):
-    output_file = get_csv(data.pdf_filename)
-    respons_data = jsonable_encoder(json.dumps({'output_file': output_file}))
+    base_folder = 'static/docs/'
+    pdf_file_path = os.path.join(base_folder, data.pdf_filename)
 
-    return Response(respons_data)
+    # Check if the file exists
+    if not os.path.isfile(pdf_file_path):
+        raise HTTPException(status_code=404, detail="PDF file not found.")
+
+    output_file = get_csv(pdf_file_path)
+    response_data = jsonable_encoder({'output_file': output_file})
+
+    return Response(response_data)
 
 if __name__ == '__main__':
     uvicorn.run('app:app', host='0.0.0.0', port=8080, reload=True)

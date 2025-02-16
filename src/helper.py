@@ -25,8 +25,8 @@ def single_file_processing(file_path):
     # Use an explicit encoding supported by tiktoken (e.g., "gpt2")
     question_splitter = TokenTextSplitter(
         encoding_name="gpt2",  # explicitly set to avoid tokeniser mapping issues
-        chunk_size=10000,
-        chunk_overlap=200
+        chunk_size=512,
+        chunk_overlap=50
     )
     chunks_str = question_splitter.split_text(source_str)
     question_chunks = [Document(page_content=t) for t in chunks_str]
@@ -34,8 +34,8 @@ def single_file_processing(file_path):
     # Further split for answer retrieval
     answer_splitter = TokenTextSplitter(
         encoding_name="gpt2",
-        chunk_size=1000,
-        chunk_overlap=100
+        chunk_size=512,
+        chunk_overlap=50
     )
     answer_chunks = answer_splitter.split_documents(question_chunks)
 
@@ -93,8 +93,11 @@ def llm_pipeline(file_path):
 
 # Example usage:
 if __name__ == "__main__":
-    file_path = "/teamspace/studios/this_studio/interview-question-creator/static/docs/1007132.pdf"  # replace with your PDF file path
-    questions, qa_chain = llm_pipeline(file_path)
+    base_folder = 'static/docs/'
+    pdf_filename = "1007132.pdf"  # replace with your PDF file name
+    pdf_file_path = os.path.join(base_folder, pdf_filename)
+
+    questions, qa_chain = llm_pipeline(pdf_file_path)
 
     print("Generated Questions:")
     for q in questions:
