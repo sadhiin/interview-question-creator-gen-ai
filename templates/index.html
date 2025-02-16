@@ -114,18 +114,52 @@
                         text: 'Please upload a PDF file first.',
                         confirmButtonColor: "#15011d"
                     });
-                    return; // Exit the function if no file is selected
+                    return;
                 }
 
-                const formData = new FormData();
-                formData.append('pdf_file', file);
-                formData.append('filename', file.name);
+                // Validate file type
+                if (file.type !== 'application/pdf') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid file type',
+                        text: 'Please upload a PDF file only.',
+                        confirmButtonColor: "#15011d"
+                    });
+                    return;
+                }
 
-                let response = await fetch('/upload', {
-                    method: "POST",
-                    body: formData
-                });
-                processUploadResponse(response);
+                // Show loading state
+                $("#upload-btn").prop('disabled', true);
+                $("#upload-btn").html('<i class="fa-solid fa-spinner fa-spin"></i> Processing...');
+
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);  // Changed from 'pdf_file' to 'file'
+
+                    let response = await fetch('/upload', {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Upload failed');
+                    }
+
+                    await processUploadResponse(response);
+
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Upload Failed',
+                        text: error.message || 'An error occurred during upload. Please try again.',
+                        confirmButtonColor: "#15011d"
+                    });
+                } finally {
+                    // Reset button state
+                    $("#upload-btn").prop('disabled', false);
+                    $("#upload-btn").html('Generate Q&A');
+                }
             });
 
             $("#show-upload-btn").click(function () {
@@ -148,52 +182,52 @@
             });
         });
 
-        async function processUploadResponse(response){
-            switch (response.status) {
-                case 400:
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops!!!',
-                        text: "Sorry, Couldn't be able to upload your pdf!!!",
-                        confirmButtonColor: "#15011d"
-                    }).then(function() {
-                        window.location.reload();
-                    });
-                  break;
-                case 200:
-                    var json = await response.json();
-                    if (json.msg == "error") {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops!',
-                            text: 'Maximum number of pages exceeded.',
-                            confirmButtonColor: "#545454"
-                        }).then(function() {
-                            window.location.reload();
-                        });
-                    } else {
-                        result.style.display = "block";
-                        loader.style.display = "block";
-                        download.style.display = "none";
-                        viewPdf.setAttribute('src', "../" + json.pdf_filename);
-                        viewPdf.setAttribute('preload', 'auto');
-                        const formData = new FormData();
-                        formData.append('pdf_filename', json.pdf_filename);
-                        fetch('/analyze', {
-                            method: "POST",
-                            body: formData
-                        }).then(processAnalyzeResponse);
-                    }
-                    break;
-                default:
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops!!!',
-                        text: "There is a " + response.status + " error. Please contact admin for support.",
-                        confirmButtonColor: "#15011d"
-                    }).then(function() {
-                        window.location.reload();
-                    });
+        async function processUploadResponse(response) {
+            try {
+                const json = await response.json();
+
+                switch (response.status) {
+                    case 200:
+                        if (json.msg === "error") {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops!',
+                                text: json.error || 'Maximum number of pages exceeded.',
+                                confirmButtonColor: "#545454"
+                            }).then(function() {
+                                window.location.reload();
+                            });
+                        } else {
+                            result.style.display = "block";
+                            loader.style.display = "block";
+                            download.style.display = "none";
+
+                            // Use the full path directly from the response
+                            viewPdf.setAttribute('src', json.pdf_filename);
+                            viewPdf.setAttribute('preload', 'auto');
+
+                            const formData = new FormData();
+                            formData.append('pdf_filename', json.pdf_filename.split('/').pop());  // Extract just the filename
+
+                            const analyzeResponse = await fetch('/analyze', {
+                                method: "POST",
+                                body: formData
+                            });
+
+                            await processAnalyzeResponse(analyzeResponse);
+                        }
+                        break;
+
+                    default:
+                        throw new Error(json.message || 'Upload failed');
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Processing Failed',
+                    text: error.message || 'An error occurred while processing the file.',
+                    confirmButtonColor: "#15011d"
+                });
             }
         }
 

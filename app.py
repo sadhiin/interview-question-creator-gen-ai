@@ -38,20 +38,31 @@ async def index(request: Request):
     return templates.TemplateResponse("index.html", {'request': request})
 
 @app.post('/upload')
-async def upload(request: Request, pdf_file: UploadFile = File(...), data: UploadPDF = Depends()):
-    base_folder = 'static/docs/'
+async def upload(request: Request, file: UploadFile = File(...)):
+    try:
+        base_folder = 'static/docs/'
 
-    if not os.path.isdir(base_folder):
-        os.makedirs(base_folder)
-    pdf_filename = os.path.join(base_folder, data.filename)
+        if not os.path.isdir(base_folder):
+            os.makedirs(base_folder)
 
-    async with aiofiles.open(pdf_filename, 'wb') as f:
-        content = await pdf_file.read()
-        await f.write(content)
+        filename = file.filename
+        pdf_filename = os.path.join(base_folder, filename)
 
-    response_data = jsonable_encoder({'msg': 'success', 'pdf_filename': pdf_filename})
+        async with aiofiles.open(pdf_filename, 'wb') as f:
+            content = await file.read()
+            await f.write(content)
 
-    return JSONResponse(content=response_data)
+        response_data = jsonable_encoder({
+            'msg': 'success',
+            'pdf_filename': f'/static/docs/{filename}'  # Include the full relative path
+        })
+
+        return JSONResponse(content=response_data)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
 
 def get_csv(file_path):
     question_list, answer_generator_chain = llm_pipeline(file_path)
@@ -78,18 +89,35 @@ def get_csv(file_path):
     return output_file
 
 @app.post('/analyze')
-async def chat(request: Request, data: AnalyzePDF = Depends()):
-    base_folder = 'static/docs/'
-    pdf_file_path = os.path.join(base_folder, data.pdf_filename)
+async def chat(request: Request, pdf_filename: str = Form(...)):
+    try:
+        base_folder = 'static/docs/'
+        pdf_file_path = os.path.join(base_folder, pdf_filename)
 
-    # Check if the file exists
-    if not os.path.isfile(pdf_file_path):
-        raise HTTPException(status_code=404, detail="PDF file not found.")
+        # Check if the file exists
+        if not os.path.isfile(pdf_file_path):
+            raise HTTPException(status_code=404, detail="PDF file not found.")
 
-    output_file = get_csv(pdf_file_path)
-    response_data = jsonable_encoder({'output_file': output_file})
+        output_file = get_csv(pdf_file_path)
 
-    return Response(response_data)
+        # Read the CSV file to get the data
+        csv_data = []
+        with open(output_file, 'r', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                csv_data.append(row)
+
+        response_data = jsonable_encoder({
+            'output_file': output_file,
+            'csv_data': csv_data
+        })
+
+        return JSONResponse(content=response_data)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
 
 if __name__ == '__main__':
     uvicorn.run('app:app', host='0.0.0.0', port=8080, reload=True)
