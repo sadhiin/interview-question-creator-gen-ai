@@ -95,7 +95,7 @@ def get_csv(file_path):
                     print(f"Error processing question: {question}\nError: {str(e)}")
                     continue
 
-        return output_file, qa_pairs
+        return csv_file, qa_pairs
     except Exception as e:
         print(f"Error in get_csv: {str(e)}")
         raise
@@ -110,13 +110,13 @@ async def chat(request: Request, pdf_filename: str = Form(...)):
         if not os.path.isfile(pdf_file_path):
             raise HTTPException(status_code=404, detail="PDF file not found")
 
-        output_file, qa_pairs = get_csv(pdf_file_path)
+        output_filename, qa_pairs = get_csv(pdf_file_path)
 
         if not qa_pairs:
             raise HTTPException(status_code=400, detail="No questions and answers were generated")
 
         response_data = jsonable_encoder({
-            'output_file': f'static/output/{output_file}',
+            'output_file': f'static/output/{output_filename}',
             'csv_data': qa_pairs
         })
 

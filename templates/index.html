@@ -290,7 +290,9 @@
                     loader.style.display = "none";
                     download.style.display = "block";
                     var json = await response.json();
-                    downloadBtn.setAttribute('href', "../" + json.output_file);
+
+                    // Update download button with correct path
+                    downloadBtn.setAttribute('href', json.output_file);
                     displayCsvData(json.csv_data);
 
                     // Show success message with summary
@@ -306,6 +308,20 @@
                         `,
                         confirmButtonColor: "#28a745"
                     });
+
+                    // Add click handler for download button
+                    downloadBtn.onclick = function(e) {
+                        if (!json.output_file) {
+                            e.preventDefault();
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Download Error',
+                                text: 'The file is not available for download. Please try again.',
+                                confirmButtonColor: "#15011d"
+                            });
+                            return false;
+                        }
+                    };
                     break;
                 default:
                     Swal.fire({

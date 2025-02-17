@@ -1,0 +1,16 @@
+Question,Answer
+What is the best title for the article? (From page(s) 1),(iii)
+"What is the first study of UDA for hate speech detection? (From page(s) 2, 1)",et al. 2021).
+What is the name of the author of the paper based on emo-jis? (From page(s) 2),"Go, Bhayani, and Huang 2009"
+What is a common method for sam-pling data for hate speech detection? (From page(s) 2),(From page(s) 2)
+How many people wrote all the tweets in the Waseem dataset? (From page(s) 3),3)
+What is the purpose of the text generation approach? (From page(s) 3),"improve hate speech detection across the board by as much as 42% AUCPR, and 278% re-call"
+What is the name of the person who proposed a multi-task learning approach to hate speechdetection? (From page(s) 3),Glavas
+What does the lexicon from hate-base.org4 contain? (From page(s) 4),H. Entries in H areunigrams (such as “criminal”) and phrases that mention of-
+What is the name of the tagging model that makes use of character-level and word-level information? (From page(s) 4),Glove word embeddingrepresentation
+"What is the name of the lexicon of OTG tokens derived from tagging bananas? (From page(s) 5, 4)","a new hate speechlexicon comprised of OTG tokens in the target domain, Ht,and the"
+What is the name of the language used to label hate speech tokens? (From page(s) 5),H. Entries in H areunigrams (such as “criminal”) and phrases that mention of-
+"How many tweets did Davidson, Bhattacharya, and Weber collect? (From page(s) 5)","85.4 million tweets written by 33,458 users"
+What is the name of the language that uses subwords to convert text to vectors? (From page(s) 6),Tagger T
+"How many layers of con-volution with max-pooling are used? (From page(s) 7, 6)","12th layer of BERT, which is a 768-dimensionalvector and pass it through a Fully"
+What is the name of the dataset that uses a softmax activation function on the repre-sentation? (From page(s) 7),Gluetasks
