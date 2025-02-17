@@ -46,17 +46,47 @@ def get_pipeline():
     """Get or create the pipeline instance"""
     global _pipeline_instance
     if _pipeline_instance is None:
+        from transformers import AutoTokenizer
+
+        # Initialize tokenizer with proper special token handling
+        tokenizer = AutoTokenizer.from_pretrained(
+            "google/flan-t5-small",
+            model_max_length=512,
+            truncation=True,
+            padding=True
+        )
+
+        # Configure special tokens
+        tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+
         _pipeline_instance = pipeline(
             "text2text-generation",
             model="google/flan-t5-small",
+            tokenizer=tokenizer,
             max_length=150,
             do_sample=True,
             temperature=0.7,
             top_p=0.95,
             num_return_sequences=1,
-            device="cpu"
+            device= "cuda" if torch.cuda.is_available() else "cpu",
+            num_beams=5,
+            # Handle special tokens properly
+            model_kwargs={
+                "max_length": 150,
+                "early_stopping": True,
+            }
         )
     return _pipeline_instance
+
+def clean_text(text):
+    """Clean text by removing problematic characters and normalizing whitespace"""
+    import re
+    # Remove special tokens and problematic characters
+    text = re.sub(r'<\|.*?\|>', '', text)
+    text = re.sub(r'[\x00-\x1F\x7F-\x9F]', '', text)
+    # Normalize whitespace
+    text = ' '.join(text.split())
+    return text
 
 def single_file_processing(file_path):
     # Load the PDF file
@@ -69,7 +99,8 @@ def single_file_processing(file_path):
     question_splitter = TokenTextSplitter(
         encoding_name="gpt2",
         chunk_size=200,
-        chunk_overlap=20
+        chunk_overlap=20,
+        disallowed_special=()  # Allow all special tokens
     )
 
     # Process pages in batches to handle large PDFs
@@ -84,8 +115,10 @@ def single_file_processing(file_path):
         for page in batch_pages:
             # Extract page number for context
             page_num = page.metadata.get('page', 0) + 1
+            # Clean and format the page content
+            page_content = clean_text(page.page_content)
             # Add page number to content for better context
-            page_content = f"Page {page_num}: {page.page_content}"
+            page_content = f"Page {page_num}: {page_content}"
             chunks = question_splitter.split_text(page_content)
             question_chunks.extend([Document(page_content=t, metadata={'page': page_num}) for t in chunks])
 
@@ -93,7 +126,8 @@ def single_file_processing(file_path):
     answer_splitter = TokenTextSplitter(
         encoding_name="gpt2",
         chunk_size=200,
-        chunk_overlap=20
+        chunk_overlap=20,
+        disallowed_special=()  # Allow all special tokens
     )
     answer_chunks = answer_splitter.split_documents(question_chunks)
 
@@ -125,7 +159,7 @@ def llm_pipeline(file_path):
             try:
                 # Combine the batch chunks content with proper formatting
                 combined_text = "\n".join([
-                    f"Content from page {chunk.metadata.get('page', '?')}:\n{chunk.page_content}\n"
+                    f"Content from page {chunk.metadata.get('page', '?')}:\n{clean_text(chunk.page_content)}\n"
                     for chunk in batch_chunks
                 ])
 
@@ -134,9 +168,9 @@ def llm_pipeline(file_path):
                 response = llm_model.invoke(prompt)
 
                 if isinstance(response, str):
-                    raw_questions = response
+                    raw_questions = clean_text(response)
                 else:
-                    raw_questions = response[0]['generated_text'] if response else ""
+                    raw_questions = clean_text(response[0]['generated_text'] if response else "")
 
                 print("Raw questions generated for batch:", raw_questions)
 
@@ -158,7 +192,7 @@ def llm_pipeline(file_path):
             print("No questions generated, trying fallback approach...")
             for chunk in document_question_chunks[:5]:  # Try first 5 chunks
                 try:
-                    prompt = f"Generate one specific question from this text: {chunk.page_content[:200]}"
+                    prompt = f"Generate one specific question from this text: {clean_text(chunk.page_content[:200])}"
                     response = llm_model.invoke(prompt)
 
                     if isinstance(response, str):
@@ -189,7 +223,7 @@ def llm_pipeline(file_path):
         # Use a more reliable embedding model
         embeddings = HuggingFaceEmbeddings(
             model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
-            model_kwargs={'device': 'cpu'}
+            model_kwargs={'device': "cuda" if torch.cuda.is_available() else "cpu"}
         )
         vector_store = FAISS.from_documents(document_answer_chunks, embeddings)
 

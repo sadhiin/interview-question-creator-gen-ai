@@ -1,0 +1,16 @@
+Question,Answer
+What is the name of the person who is a researcher at the Center for Intelligent Information Retrieval? (From page(s) 1),Marcu
+What are the following words of an anti-Muslim term used for? (From page(s) 1),a blog
+"What is the purpose of the article? (From page(s) 2, 1)",(C).
+What is the author's first purpose of the paper? (From page(s) 2),a domain-adaptation approach
+What are the most studied public data sets labeled for hate speech detection? (From page(s) 2),2).
+What is the author's opinion about the bias in the Waseem dataset? (From page(s) 3),3
+What is the purpose of the study? (From page(s) 3),To improve the detection of hate speech
+What is the name of the proposed method? (From page(s) 3),We define the model for the CNN based on a data-based model for the CNN
+What were the examples of hate speech detection? (From page(s) 4),The authors reviewed the literature on hate speech detection and domainadaptation
+Who tagged the tokens “honda” and “CRVs”? (From page(s) 4),A tagging and tagged tokens
+"What is the target domain for eDtu? (From page(s) 5, 4)",lexiconHt
+Are there any other examples of hate speech eDweak? (From page(s) 5),Anti-drug behavior detection Task 5: Multilingual Detection of HateSpeech Against Immigrants and
+What datasets are used to collect data for annotated hate speech? (From page(s) 5),Data sets
+What were the datasets containing? (From page(s) 6),6)
+What is the name of the dataset that uses a word-biLSTM model? (From page(s) 6),if-ferent datasets compared to when they are from the samedataset

@@ -1,0 +1,16 @@
+Question,Answer
+"How does the LLM structure work? (From page(s) 2, 1)","(From page(s) 2, 1) Helpful"
+"What is the latin name of the person that wrote the first book? (From page(s) 5, 4, 3)",Louis Curmer
+What is the ISBN for this book? (From page(s) 6),66.9680
+"What are some examples of a GPT model? (From page(s) 9, 7, 8)","124-million-parameter GPT-2 model, it’s repeated 12 times"
+"How can I learn how to use a generative text model? (From page(s) 11, 10)",By analyzing the model weights
+"What is the name of the language models whose name means “large”? (From page(s) 13, 12, 11)",c/s
+"What is the most important part of writing a book? (From page(s) 13, 14, 15)",A strong foundation in Python programming
+"Who wrote the book? (From page(s) 16, 15)","[10899, 2138, 257, 257, 922, 5891, 1576, 438, 568, 340, 373, 645]"
+"What is the a t y o u r o w n? (From page(s) 18, 17)",a GPT-like large language model
+What is the key concepts in the book? (From page(s) 18),A roadmap
+What is the main purpose of this book? (From page(s) 19),Educational
+"What is the name of the website that explains how to get up to speed with a content from Page 20? (From page(s) 19, 20)",GitHub
+"What is the full name of the author of the book? (From page(s) 22, 20, 21)",Louis Curmer
+"What are some of the earliest examples of LLMs based on? (From page(s) 23, 24)",ChatGPT-like LLM
+What are some of the languages that are used in machine learning? (From page(s) 25),English
