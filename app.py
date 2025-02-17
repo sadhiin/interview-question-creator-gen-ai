@@ -116,7 +116,7 @@ async def chat(request: Request, pdf_filename: str = Form(...)):
             raise HTTPException(status_code=400, detail="No questions and answers were generated")
 
         response_data = jsonable_encoder({
-            'output_file': 'static/output/QA.csv',
+            'output_file': f'static/output/{output_file}',
             'csv_data': qa_pairs
         })
 

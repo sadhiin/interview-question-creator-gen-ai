@@ -1,117 +1,166 @@
-# Interview-Question-Creator-Gen-AI
+# Interview Question Creator (Gen AI)
 
-Welcome to the Interview-Question-Creator-Gen-AI project! This project leverages the power of FastAPI and advanced language models to generate interview questions and answers from uploaded PDF documents.
+An intelligent system that automatically generates comprehensive questions and answers from PDF documents using advanced language models and natural language processing.
 
-## Design
-![architecture-image](./figures/design.png)
+## 🌟 Features
 
-## Table of Contents  
-- [Introduction](#introduction)  
-- [Features](#features)  
-- [Prerequisites](#prerequisites)  
-- [Installation](#installation)  
-- [Usage](#usage)  
-- [Endpoints](#endpoints)  
-- [Contributing](#contributing)  
-- [License](#license)  
+- **📚 Document Processing**
+  - Support for PDF documents of any size
+  - Intelligent text chunking and processing
+  - Maintains context across document sections
 
-## Introduction  
+- **🤖 AI-Powered Question Generation**
+  - Generates diverse types of questions:
+    - Conceptual understanding questions
+    - Technical detail questions
+    - Analytical questions
+    - Application-based questions
+  - Context-aware question generation
+  - Page reference tracking
 
-The **Interview-Question-Creator-Gen-AI** project is designed to help users generate interview questions and answers from **PDF documents**. By uploading a PDF, the application processes the content and generates a **CSV file** containing relevant questions and answers.  
+- **💡 Smart Answer Generation**
+  - Context-aware answer generation
+  - Accurate information retrieval
+  - Source page references
+  - Verification against source content
 
-This tool can be particularly useful for **HR professionals, educators, and anyone preparing for interviews**.  
+- **🎯 User Experience**
+  - Clean and intuitive web interface
+  - Real-time processing feedback
+  - Easy document upload
+  - CSV export functionality
+  - Progress tracking
 
-## Features  
-- **📂 PDF Upload**: Easily upload PDF documents for analysis.  
-- **🤖 Question Generation**: Automatically generate interview questions from the content of the PDF.  
-- **📝 Answer Generation**: Provide answers to the generated questions using advanced language models.  
-- **📊 CSV Export**: Export the generated questions and answers to a CSV file for easy access and sharing.  
+## 🚀 Technology Stack
 
-## Prerequisites
+- **Backend Framework**: FastAPI
+- **AI/ML Components**:
+  - LangChain for orchestration
+  - HuggingFace models for text generation
+  - FAISS for vector similarity search
+  - Sentence Transformers for embeddings
+- **Frontend**: HTML5, Bootstrap 5, jQuery
+- **Document Processing**: PyPDF, TokenTextSplitter
+- **Data Format**: CSV for output
 
-- Python 3.10+
-- pip
+## 📋 Prerequisites
 
-## Installation  
+- Python 3.11+
+- 4GB+ RAM
+- Storage space for model caching
+- Internet connection for initial model download
 
-### Clone the repository:  
-```bash
-git clone https://github.com/sadhiin/interview-question-creator-gen-ai.git
-cd interview-question-creator-gen-ai
+## ⚙️ Installation
 
-### Create a virtual environment and activate it:  
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-### Install the required dependencies:  
-```bash
-pip install -r requirements.txt
-```
-
-### Install the Petals library:  
-```bash
-pip install petals
-```
-
-## Usage  
-
-Run the FastAPI application:  
-```bash
-uvicorn app:app --host 0.0.0.0 --port 8080 --reload
-```
-
-Open your browser and navigate to **[http://localhost:8080](http://localhost:8080)** to access the web application. And the SweigerUI at **[http://localhost:8080/docs](http://localhost:8080/docs)**
-
-## Endpoints  
-
-### `GET /`  
-**Renders the index page.**  
-
-### `POST /upload`  
-**Uploads a PDF file.**  
-
-#### **Request Parameters:**  
-- `pdf_file (bytes)`: The PDF file to upload `file_name.pdf`.  
-- `filename (str)`: The name of the file.  
-
-#### **Response:**  
-Returns a JSON object containing a success message and the path to the uploaded PDF file.  
-
-### `POST /analyze`  
-**Analyzes the uploaded PDF file and generates a CSV file with questions and answers.**  
-
-#### **Request Parameters:**  
-- `pdf_filename (str)`: The name of the uploaded PDF file.  
-
-#### **Response:**  
-Returns a JSON object containing the path to the generated CSV file.  
-
-## Contributing  
-
-1. **Fork** the repository.  
-2. Create a new branch:  
+1. **Clone the Repository**
    ```bash
-   git checkout -b feature-branch
+   git clone https://github.com/yourusername/interview-question-creator.git
+   cd interview-question-creator
    ```
-3. Make your changes.  
-4. Commit your changes:  
-   ```bash
-   git commit -m 'Add some feature'
-   ```
-5. Push to the branch:  
-   ```bash
-   git push origin feature-branch
-   ```
-6. Open a **pull request**.  
 
-## License  
+2. **Set Up Virtual Environment**
+   ```bash
+   python -m venv venv
 
-This project is licensed under the **MIT License**. See the `LICENSE` file for details.  
+   # On Windows
+   .\venv\Scripts\activate
+
+   # On Unix or MacOS
+   source venv/bin/activate
+   ```
+
+3. **Install Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+## 🔧 Configuration
+
+The system uses several key configurations:
+
+1. **Model Settings**
+   - Uses FLAN-T5-small for question generation
+   - Sentence-transformers for embeddings
+   - Configurable batch sizes and token limits
+
+2. **Processing Parameters**
+   - Chunk size: 200 tokens
+   - Overlap: 20 tokens
+   - Batch processing: 10 pages at a time
+   - Maximum 15 questions per document
+
+## 🚀 Usage
+
+1. **Start the Server**
+   ```bash
+   uvicorn app:app --host 0.0.0.0 --port 8080 --reload
+   ```
+
+2. **Access the Application**
+   - Web Interface: http://localhost:8080
+   - API Documentation: http://localhost:8080/docs
+
+3. **Using the Application**
+   1. Upload your PDF document
+   2. Wait for processing (time depends on document size)
+   3. Review generated questions and answers
+   4. Download the CSV output
+
+## 📚 API Endpoints
+
+### `GET /`
+- Returns the main web interface
+- No parameters required
+
+### `POST /upload`
+- Uploads a PDF document
+- Parameters:
+  - `file`: PDF file (multipart/form-data)
+- Returns: Upload confirmation and file path
+
+### `POST /analyze`
+- Generates questions and answers from uploaded PDF
+- Parameters:
+  - `pdf_filename`: Name of the uploaded file
+- Returns: Generated Q&A in CSV format
+
+## 📊 Output Format
+
+The generated CSV file contains:
+- Questions with page references
+- Corresponding answers
+- Source page numbers
+- Confidence scores (if applicable)
+
+## 🛠️ Development
+
+To contribute to the project:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests (if available)
+5. Submit a pull request
+
+## ⚠️ Known Limitations
+
+- Processing very large PDFs (>1000 pages) may take significant time
+- Quality of questions depends on document clarity
+- Some technical documents may need multiple passes
+- GPU acceleration recommended for large documents
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+## 📧 Contact
+
+For questions and feedback, please open an issue in the GitHub repository.
 
 ---
 
-Thank you for checking out the **Interview-Question-Creator-Gen-AI** project! 🚀  
-If you have any questions or feedback, feel free to reach out. **Happy coding!** 😊  
-```
+Made with ❤️ using Python and Opensource LLM models and tools 🫰🏼

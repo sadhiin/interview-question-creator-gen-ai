@@ -134,7 +134,7 @@
 
                 try {
                     const formData = new FormData();
-                    formData.append('file', file);  // Changed from 'pdf_file' to 'file'
+                    formData.append('file', file);
 
                     let response = await fetch('/upload', {
                         method: "POST",
@@ -145,6 +145,22 @@
                         const errorData = await response.json();
                         throw new Error(errorData.message || 'Upload failed');
                     }
+
+                    // Show success message with file details
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'File Uploaded Successfully!',
+                        html: `
+                            <div class="text-left">
+                                <p><strong>File Name:</strong> ${file.name}</p>
+                                <p><strong>File Size:</strong> ${(file.size / (1024 * 1024)).toFixed(2)} MB</p>
+                                <p>Processing will begin shortly...</p>
+                            </div>
+                        `,
+                        confirmButtonColor: "#28a745",
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
 
                     await processUploadResponse(response);
 
@@ -166,8 +182,21 @@
                 const fileInput = document.getElementById('pdf-file');
                 const file = fileInput.files[0];
 
-                // Check if a file is selected
                 if (file) {
+                    // Show file information
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'PDF File Information',
+                        html: `
+                            <div class="text-left">
+                                <p><strong>File Name:</strong> ${file.name}</p>
+                                <p><strong>File Size:</strong> ${(file.size / (1024 * 1024)).toFixed(2)} MB</p>
+                                <p><strong>Last Modified:</strong> ${new Date(file.lastModified).toLocaleString()}</p>
+                            </div>
+                        `,
+                        confirmButtonColor: "#17a2b8"
+                    });
+
                     const fileURL = URL.createObjectURL(file);
                     viewPdf.setAttribute('src', fileURL);
                     result.style.display = "block";
@@ -202,12 +231,23 @@
                             loader.style.display = "block";
                             download.style.display = "none";
 
-                            // Use the full path directly from the response
+                            // Show processing message
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Processing PDF',
+                                html: 'Generating questions and answers...<br>This may take a few minutes.',
+                                showConfirmButton: false,
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+
                             viewPdf.setAttribute('src', json.pdf_filename);
                             viewPdf.setAttribute('preload', 'auto');
 
                             const formData = new FormData();
-                            formData.append('pdf_filename', json.pdf_filename.split('/').pop());  // Extract just the filename
+                            formData.append('pdf_filename', json.pdf_filename.split('/').pop());
 
                             const analyzeResponse = await fetch('/analyze', {
                                 method: "POST",
@@ -231,30 +271,47 @@
             }
         }
 
-        async function processAnalyzeResponse(response){
+        async function processAnalyzeResponse(response) {
+            // Close any existing processing message
+            Swal.close();
+
             switch (response.status) {
                 case 400:
                     Swal.fire({
                         icon: 'error',
-                        title: 'Oops!!!',
-                        text: "Sorry, Couldn't be able to analyze your pdf!!!",
+                        title: 'Analysis Failed',
+                        text: "Could not analyze the PDF. Please try again.",
                         confirmButtonColor: "#15011d"
                     }).then(function() {
                         window.location.reload();
                     });
-                  break;
+                    break;
                 case 200:
                     loader.style.display = "none";
                     download.style.display = "block";
                     var json = await response.json();
                     downloadBtn.setAttribute('href', "../" + json.output_file);
-                    displayCsvData(json.csv_data); // Assuming the CSV data is returned in the response
+                    displayCsvData(json.csv_data);
+
+                    // Show success message with summary
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Analysis Complete!',
+                        html: `
+                            <div class="text-left">
+                                <p><strong>Questions Generated:</strong> ${json.csv_data.length}</p>
+                                <p>Questions and answers are ready for download.</p>
+                                <p>You can also view them in the table below.</p>
+                            </div>
+                        `,
+                        confirmButtonColor: "#28a745"
+                    });
                     break;
                 default:
                     Swal.fire({
                         icon: 'error',
-                        title: 'Oops!!!',
-                        text: "There is a " + response.status + " error. Please contact admin for support.",
+                        title: 'Unexpected Error',
+                        text: `Error code: ${response.status}. Please contact support.`,
                         confirmButtonColor: "#15011d"
                     }).then(function() {
                         window.location.reload();
@@ -263,13 +320,13 @@
         }
 
         function displayCsvData(csvData) {
-            csvBody.innerHTML = ""; // Clear previous data
+            csvBody.innerHTML = "";
             csvData.forEach(row => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `<td>${row.question}</td><td>${row.answer}</td>`;
                 csvBody.appendChild(tr);
             });
-            csvTable.style.display = "block"; // Show the CSV table
+            csvTable.style.display = "block";
         }
     </script>
 </body>
