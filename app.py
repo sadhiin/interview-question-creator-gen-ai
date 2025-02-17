@@ -15,7 +15,8 @@ from pydantic import BaseModel
 from src.helper import llm_pipeline
 
 app = FastAPI()
-app.mount('/static', StaticFiles(directory='static'), name='static')
+ROOT = '/teamspace/studios/this_studio/interview-question-creator/'
+app.mount(os.path.join(ROOT,'/static'), StaticFiles(directory='static'), name='static')
 templates = Jinja2Templates(directory='templates')
 
 app.add_middleware(
@@ -41,6 +42,7 @@ async def index(request: Request):
 async def upload(request: Request, file: UploadFile = File(...)):
     try:
         base_folder = 'static/docs/'
+        base_folder = os.path.join(ROOT, base_folder)
 
         if not os.path.isdir(base_folder):
             os.makedirs(base_folder)
@@ -68,6 +70,7 @@ def get_csv(file_path):
     question_list, answer_generator_chain = llm_pipeline(file_path)
 
     base_folder = 'static/output'
+    base_folder = os.path.join(ROOT, base_folder)
     if not os.path.isdir(base_folder):
         os.makedirs(base_folder)
 
@@ -92,14 +95,16 @@ def get_csv(file_path):
 async def chat(request: Request, pdf_filename: str = Form(...)):
     try:
         base_folder = 'static/docs/'
+        base_folder = os.path.join(ROOT, base_folder)
         pdf_file_path = os.path.join(base_folder, pdf_filename)
+        print('PDF file path: ', pdf_file_path)
 
         # Check if the file exists
         if not os.path.isfile(pdf_file_path):
             raise HTTPException(status_code=404, detail="PDF file not found.")
 
         output_file = get_csv(pdf_file_path)
-
+        print('Got the output file.')
         # Read the CSV file to get the data
         csv_data = []
         with open(output_file, 'r', encoding='utf-8') as csvfile:
@@ -114,6 +119,7 @@ async def chat(request: Request, pdf_filename: str = Form(...)):
 
         return JSONResponse(content=response_data)
     except Exception as e:
+        print('Error: ', e)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e)
