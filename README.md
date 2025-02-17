@@ -6,8 +6,10 @@ An intelligent system that automatically generates comprehensive questions and a
 
 - **📚 Document Processing**
   - Support for PDF documents of any size
-  - Intelligent text chunking and processing
+  - Intelligent text chunking with optimized token sizes
+  - Smart batch processing for large documents
   - Maintains context across document sections
+  - Automatic page reference tracking
 
 - **🤖 AI-Powered Question Generation**
   - Generates diverse types of questions:
@@ -16,30 +18,34 @@ An intelligent system that automatically generates comprehensive questions and a
     - Analytical questions
     - Application-based questions
   - Context-aware question generation
-  - Page reference tracking
+  - Intelligent fallback mechanisms
+  - Duplicate question detection and filtering
 
 - **💡 Smart Answer Generation**
-  - Context-aware answer generation
-  - Accurate information retrieval
+  - Advanced answer processing with repetition prevention
+  - Multi-document context retrieval
+  - Sentence-level deduplication
+  - Automatic answer length optimization
   - Source page references
-  - Verification against source content
+  - Answer quality filtering
 
 - **🎯 User Experience**
   - Clean and intuitive web interface
   - Real-time processing feedback
-  - Easy document upload
-  - CSV export functionality
-  - Progress tracking
+  - Progress tracking with detailed status updates
+  - Interactive file preview
+  - Downloadable CSV results
+  - Tabulated Q&A display
 
 ## 🚀 Technology Stack
 
 - **Backend Framework**: FastAPI
 - **AI/ML Components**:
   - LangChain for orchestration
-  - HuggingFace models for text generation
+  - FLAN-T5-small for text generation
   - FAISS for vector similarity search
   - Sentence Transformers for embeddings
-- **Frontend**: HTML5, Bootstrap 5, jQuery
+- **Frontend**: HTML5, Bootstrap 5, jQuery, SweetAlert2
 - **Document Processing**: PyPDF, TokenTextSplitter
 - **Data Format**: CSV for output
 
@@ -49,8 +55,32 @@ An intelligent system that automatically generates comprehensive questions and a
 - 4GB+ RAM
 - Storage space for model caching
 - Internet connection for initial model download
+- CUDA-compatible GPU (optional, for faster processing)
 
 ## ⚙️ Installation
+
+### Using Poetry (Recommended)
+
+1. **Install Poetry**
+   ```bash
+   curl -sSL https://install.python-poetry.org | python3 -
+   ```
+
+2. **Clone the Repository**
+   ```bash
+   git clone https://github.com/yourusername/interview-question-creator.git
+   cd interview-question-creator
+   ```
+
+3. **Install Dependencies with Poetry**
+   ```bash
+   poetry install
+
+   # Activate the virtual environment
+   poetry shell
+   ```
+
+### Using Pip
 
 1. **Clone the Repository**
    ```bash
@@ -76,23 +106,39 @@ An intelligent system that automatically generates comprehensive questions and a
 
 ## 🔧 Configuration
 
-The system uses several key configurations:
+The system uses several optimized configurations:
 
 1. **Model Settings**
-   - Uses FLAN-T5-small for question generation
-   - Sentence-transformers for embeddings
-   - Configurable batch sizes and token limits
+   - FLAN-T5-small for efficient question generation
+   - Optimized token limits (256 tokens)
+   - Temperature: 0.8 for balanced creativity
+   - Top-k: 50 for diverse outputs
+   - Repetition penalty: 1.5
+   - No-repeat-ngram-size: 3
 
 2. **Processing Parameters**
-   - Chunk size: 256 tokens
-   - Overlap: 20 tokens
+   - Question chunk size: 256 tokens
+   - Answer chunk size: 256 tokens
+   - Chunk overlap: 20 tokens
    - Batch processing: 10 pages at a time
    - Maximum 15 questions per document
+   - Answer retrieval: Top 2 most relevant chunks
+
+3. **Quality Control**
+   - Automatic duplicate removal
+   - Minimum answer length validation
+   - Repetitive content filtering
+   - Sentence-level deduplication
+   - Maximum answer length truncation (1000 chars)
 
 ## 🚀 Usage
 
 1. **Start the Server**
    ```bash
+   # Using Poetry
+   poetry run uvicorn app:app --host 0.0.0.0 --port 8080 --reload
+
+   # Using Pip
    uvicorn app:app --host 0.0.0.0 --port 8080 --reload
    ```
 
@@ -102,9 +148,9 @@ The system uses several key configurations:
 
 3. **Using the Application**
    1. Upload your PDF document
-   2. Wait for processing (time depends on document size)
+   2. Monitor the processing status
    3. Review generated questions and answers
-   4. Download the CSV output
+   4. Download the CSV output or view in-browser table
 
 ## 📚 API Endpoints
 
@@ -122,15 +168,15 @@ The system uses several key configurations:
 - Generates questions and answers from uploaded PDF
 - Parameters:
   - `pdf_filename`: Name of the uploaded file
-- Returns: Generated Q&A in CSV format
+- Returns: Generated Q&A in CSV format and JSON response
 
 ## 📊 Output Format
 
 The generated CSV file contains:
 - Questions with page references
-- Corresponding answers
+- Cleaned and processed answers
 - Source page numbers
-- Confidence scores (if applicable)
+- Properly formatted content without repetition
 
 ## 🛠️ Development
 
@@ -148,6 +194,28 @@ To contribute to the project:
 - Quality of questions depends on document clarity
 - Some technical documents may need multiple passes
 - GPU acceleration recommended for large documents
+- Maximum token length of 256 for each chunk
+- Limited to 15 questions per document for quality control
+
+## 🔍 Troubleshooting
+
+Common issues and solutions:
+
+1. **Token Length Errors**
+   - The system automatically handles token length issues
+   - Chunks are processed in smaller sizes (256 tokens)
+   - Answers are automatically truncated if too long
+
+2. **Repetitive Outputs**
+   - Implemented multiple layers of repetition prevention
+   - Sentence-level deduplication
+   - N-gram repetition blocking
+   - Answer quality filtering
+
+3. **Memory Issues**
+   - Batch processing of pages
+   - Automatic resource cleanup
+   - CUDA cache clearing when available
 
 ## 📝 License
 
@@ -163,4 +231,4 @@ For questions and feedback, please open an issue in the GitHub repository.
 
 ---
 
-Made with ❤️ using Python and Opensource LLM models and tools 🫰🏼
+Made with ❤️ using Python and Open Source LLM models 🫰🏼
