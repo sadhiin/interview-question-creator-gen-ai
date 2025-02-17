@@ -1,0 +1,16 @@
+Question,Answer
+What is the main topic of the text? (From page(s) 1),Hate speech detection
+"What is the novel model based on the SeqGAN model? (From page(s) 2, 1)",2).
+What datasets have been developed to detect hate speech in social media? (From page(s) 2),HateGAN
+"What kind of tools are used for short hate speech detection? (From page(s) 2, 3)",HateGAN
+What is the baseline for the model based on the dataset? (From page(s) 3),CNN-LSTM-GenAug
+"What are the five polarities of the text? (From page(s) 4, 3)",6
+How many steps is the algorithm used for generating for the t-th word? (From page(s) 4),3
+What is the baseline for the WZ-LS 13202 hate? (From page(s) 5),LSTM+HateGAN
+"What datasets are used for training the HateGAN model? (From page(s) 6, 5)",HateGAN model
+What datasets are being evaluated for a robustness of HateGAN model? (From page(s) 6),WZ-LS and DT
+How many layers are in the dataset? (From page(s) 6),6)
+What is the dataset for wz-LS data? (From page(s) 7),DT
+What data augmentations are used to improve hate speech detection performance? (From page(s) 7),7)
+"How many cases studies did the CNN-LSTM+HateGAN model provide? (From page(s) 8, 7)",4.5
+"What are the most similar tweets in the dataset? (From page(s) 8, 9)",(Distance)

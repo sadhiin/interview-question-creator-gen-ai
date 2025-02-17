@@ -1,0 +1,11 @@
+Question,Answer
+What was the percentage of people who reported having experienced some type of on- line harassment? (From page 1),(44%)
+What do these approaches require to achieve high recall in the hate speech class? (From page 1),a random boosted sampling
+What language is used to describe the content of the tweets? (From page 2),Spanish
+"What is the topic of the sentence ""The prob- lem""? (From page 2)",The prob- lem
+Which domain data are a source data set? (From page 1),a source domain keyword
+What is the purpose of this study? (From page 1),To improve the domain adaptation of the Waseem dataset
+What is the simplest method of detecting a domain mismatch? (From page 1),collect la- beled data from the target domain
+"What is the acronym for the Center for Intelligent Information Retrieval, Uni- versity of Massachusetts Amherst? (From page 1)",aaai
+Which dataset does this dataset support? (From page 2),Word-BiLSTM
+What is the percentage of people who report online harassment? (From page 1),(44%)
