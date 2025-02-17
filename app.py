@@ -12,7 +12,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime
-from src.helper import llm_pipeline
+from src.helper import llm_pipeline, process_answer
 
 app = FastAPI()
 ROOT = '/teamspace/studios/this_studio/interview-question-creator/'
@@ -87,10 +87,14 @@ def get_csv(file_path):
 
             for question in question_list:
                 try:
-                    answer = answer_generator_chain.run(question)
-                    print(f'Q: {question}\nA: {answer}\n{"-"*50}\n')
-                    csv_writer.writerow([question, answer])
-                    qa_pairs.append({'question': question, 'answer': answer})
+                    raw_answer = answer_generator_chain.run(question)
+                    # Process and clean the answer
+                    cleaned_answer = process_answer(raw_answer)
+
+                    if len(cleaned_answer.strip()) > 10:  # Only include non-empty answers
+                        print(f'Q: {question}\nA: {cleaned_answer}\n{"-"*50}\n')
+                        csv_writer.writerow([question, cleaned_answer])
+                        qa_pairs.append({'question': question, 'answer': cleaned_answer})
                 except Exception as e:
                     print(f"Error processing question: {question}\nError: {str(e)}")
                     continue

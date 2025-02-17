@@ -84,7 +84,7 @@ The system uses several key configurations:
    - Configurable batch sizes and token limits
 
 2. **Processing Parameters**
-   - Chunk size: 200 tokens
+   - Chunk size: 256 tokens
    - Overlap: 20 tokens
    - Batch processing: 10 pages at a time
    - Maximum 15 questions per document
