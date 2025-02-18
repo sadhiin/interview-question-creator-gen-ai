@@ -37,12 +37,13 @@ An intelligent system that automatically generates comprehensive questions and a
   - Downloadable CSV results
   - Tabulated Q&A display
 
-- **✨Design and Informations**
-   <!-- - ![architecture-image](./figures/desing.png) -->
-   <!-- ![architecture-image](./figures/design.png)
-   ![architecture-image](./figures/design.png)
-   ![architecture-image](./figures/design.png)
-   ![architecture-image](./figures/design.png) -->
+- **✨Design and Screen-Shots**
+   - ![](./figures/desing.png)
+   - ![](./figures/fig_1.png)
+   - ![](./figures/fig_2.png)
+   - ![](./figures/fig_2_1.png)
+   - ![](./figures/fig_3.png)
+   - ![](./figures/fig_4.png)
 
 ## 🚀 Technology Stack
 
