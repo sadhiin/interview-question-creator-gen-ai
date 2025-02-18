@@ -37,6 +37,13 @@ An intelligent system that automatically generates comprehensive questions and a
   - Downloadable CSV results
   - Tabulated Q&A display
 
+- **✨Design and Informations**
+   <!-- - ![architecture-image](./figures/desing.png) -->
+   <!-- ![architecture-image](./figures/design.png)
+   ![architecture-image](./figures/design.png)
+   ![architecture-image](./figures/design.png)
+   ![architecture-image](./figures/design.png) -->
+
 ## 🚀 Technology Stack
 
 - **Backend Framework**: FastAPI
